@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<statusListener
+		class="ch.qos.logback.core.status.OnConsoleStatusListener" />
+	<appender name="LOKI"
+		class="com.github.loki4j.logback.Loki4jAppender">
+		<metricsEnabled>true</metricsEnabled>
+		<http class="com.github.loki4j.logback.ApacheHttpSender">
+			<url>http://192.168.100.90:3100/loki/api/v1/push</url>
+		</http>
+		<batchMaxItems>1</batchMaxItems>
+		<format>
+			<label>
+				<pattern>app=gugus,host=${HOSTNAME},level=%level</pattern>
+			</label>
+			<message>
+				<pattern>l=%level h=${HOSTNAME} c=%logger{20} t=%thread | %msg %ex</pattern>
+			</message>
+		</format>
+		<verbose>true</verbose>
+		<staticLabels>true</staticLabels>
+<!-- 		<drainOnStop>true</drainOnStop> -->
+	</appender>
+	<appender name="STDOUT"
+		class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%msg %ex </pattern>
+		</encoder>
+	</appender>
+
+	<root level="DEBUG">
+		<appender-ref ref="LOKI" />
+		<appender-ref ref="STDOUT" />
+	</root>
+
+	<!-- <logger name="org.hibernate.SQL" level="DEBUG" /> <logger name="org.hibernate.type" 
+		level="TRACE" /> -->
+</configuration>
